@@ -17,10 +17,21 @@ class LoginViewController: UIViewController {
     private let user = "User"
     private let password = "Password"
     
+    private let userData = User.getUserInfo()
+    
   // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let welcomeVC = segue.destination as? WelcomeViewController else { return }
-        welcomeVC.user = user
+        guard let tabBarController = segue.destination as? UITabBarController else { return }
+        let viewControllers = tabBarController.viewControllers ?? []
+        
+        for viewController in viewControllers {
+            if let welcomeVC = viewController as? WelcomeViewController {
+                welcomeVC.user = userData.person.personName
+            } else if let navigationVC = viewController as? UINavigationController {
+                guard let userHobby = navigationVC.topViewController as? MyHobbyViewController else { return }
+                userHobby.user = userData
+            }
+        }
     }
     
     // MARK: IBActions
